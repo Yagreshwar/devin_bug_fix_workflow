@@ -26,3 +26,31 @@ def test_order_total_with_discount_before_tax():
     assert result["subtotal"] == Decimal("100.00")
     assert result["discount"] == Decimal("20.00")
     assert result["total"] == Decimal("80.00")
+
+
+def test_order_total_with_discount_and_tax():
+    items = [{"price": "100.00", "quantity": 1}]
+
+    result = calculate_order_total(
+        items,
+        discount_percent=20,
+        tax_rate="0.10",
+    )
+
+    assert result["subtotal"] == Decimal("100.00")
+    assert result["discount"] == Decimal("20.00")
+    assert result["tax"] == Decimal("8.00")
+    assert result["total"] == Decimal("88.00")
+
+
+def test_order_total_with_discount_on_multiple_items():
+    items = [
+        {"price": "30.00", "quantity": 2},
+        {"price": "40.00", "quantity": 1},
+    ]
+
+    result = calculate_order_total(items, discount_percent=25)
+
+    assert result["subtotal"] == Decimal("100.00")
+    assert result["discount"] == Decimal("25.00")
+    assert result["total"] == Decimal("75.00")
